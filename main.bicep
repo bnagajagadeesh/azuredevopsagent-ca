@@ -41,6 +41,7 @@ param imageTag string
 param acrBuildPlatform string = 'linux'
 
 var acrPullRole = resourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+param currentTimestamp string = utcNow('yyyy-MM-ddTHH:mm:ssZ')
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
   name: containerAppLogAnalyticsName
@@ -138,7 +139,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-06-01-preview' = {
       ]            
     }
     template: {
-      revisionSuffix: 'firstrevision'
+      revisionSuffix: 'revision-${currentTimestamp}'
       containers: [
         {
           name: containerAppName

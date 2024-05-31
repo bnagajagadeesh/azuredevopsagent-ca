@@ -47,11 +47,6 @@ Create a new Azure DevOps YAML pipeline using [azure-pipelines.yml](azure-pipeli
 ### Create Agent pool
 Create a new agent pool following steps given [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=azure-devops&tabs=yaml%2Cbrowser#create-agent-pools) 
 
-Add System assigned managed identity of Container App to 
- Azure DevOps Orgnization settings - users
- agent pool - Security - User permissions with administrator role
- Note: This step to be performed after creating container app via azure devops pipeline
-
 ## Build
 
 ### Build and deploy to Container Apps
@@ -74,6 +69,25 @@ Container App Environment: It creates a container app environment with a consump
 Container App: It creates a container app with the UAI and deploys it to the container app environment. The app is configured to use the Docker image from the ACR, and it's scaled based on HTTP requests.
 
 Output: It outputs the fully qualified domain name (FQDN) of the container app.
+
+You get an error in container app after the deployment due to missing permissions. 
+![alt text](images/ca-agent-error.png)
+
+Access denied. ca-azpagent needs Manage permissions for pool selfhostedagentpool to perform the action. For more information, contact the Azure DevOps Server administrator.
+
+To fix this issue, you need to add below permissions in Azure DevOps
+
+Add System assigned managed identity of Container App to 
+ 1) Azure DevOps Orgnization settings - users and
+ 2) Add an Azure Managed Identity to an Azure DevOps agent pool follow these steps:
+Navigate to your Azure DevOps organization.
+Go to Project Settings.
+Under Pipelines, select Agent Pools.
+Select the desired agent pool.
+Go to the Security tab.
+Click on "Add" and then "Add Azure AD user or group".
+In the dialog box that appears, search for the name of your Managed Identity.
+Select the Managed Identity from the list, Select Role as "Administrator" and click on "Add".
 
 ### Test
 Naviate to Azure DevOps - Orgnization settings - Pipelines - Agent pools - selfhostedagentpool - Agents
