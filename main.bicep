@@ -144,7 +144,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-06-01-preview' = {
           name: containerAppName
           image: buildAcrImage.outputs.acrImage
           resources: {
-            cpu: json('2')
+            cpu: json('1')
             memory: '2Gi'
           }          
           env: [

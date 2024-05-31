@@ -20,7 +20,7 @@ Container App runs Azure DevOps self hosted agent container and listen for any p
 
 ## Getting Started
 
-In this quick start, you create Azure DevOps pipeline which will create an Azure container registry, run registry task to build from a Dockerfile and push to container registry, create user assigned identity, assign acrPull role on container registry, create container app with user assigned identity, set the registry and pull image from container registry.
+In this quick start, you create Azure DevOps pipeline which deploys Bicep script to create an Azure container registry, run registry task to build from a Dockerfile and push to container registry, create user assigned identity, assign acrPull role on container registry, create container app with user assigned identity, set the registry and pull image from container registry.
 
 ### Create an Azure DevOps repository and clone the source code
 Create a new Git repository in Azure DevOps and clone the source code from [Github repo](https://github.com/bnagajagadeesh/azuredevopsagent-ca.git).
