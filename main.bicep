@@ -24,7 +24,7 @@ param maxReplica int = 3
 param AcrName string = 'crazpagent'
 
 @description('The Git Repository URL, eg. https://github.com/YOURORG/YOURREPO.git')
-param gitRepositoryUrl string = 'https://github.com/bnagajagadeesh/azuredevopsagent.git'
+param gitRepositoryUrl string = 'https://github.com/bnagajagadeesh/azuredevopsagent-ca.git'
 
 @description('The name of the repository branch to use')
 param gitBranch string = 'main'
@@ -80,7 +80,7 @@ resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-previe
   location: location
 }
 
-@description('This allows the managed identity of the container app to access the registry, note scope is applied to the wider ResourceGroup not the ACR')
+@description('This allows the managed identity of the container app to access the registry and scope is applied to the ACR')
 resource uaiRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().id, uai.id, acrPullRole)
   scope: acr
