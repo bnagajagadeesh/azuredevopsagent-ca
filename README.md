@@ -2,7 +2,7 @@
 
 This is the companion repository for the [Run a self hosted agent in Docker](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops) and [Deploy to Azure Container Apps from Azure Pipelines](https://learn.microsoft.com/en-us/azure/container-apps/azure-pipelines). 
 
-This project helps Azure DevOps engineers to setup Azure DevOps self-hosted agent running in Azure Container App
+This repository helps Azure DevOps engineers to setup Azure DevOps self-hosted agent running in Azure Container App
 
 ## Architecture
 ![alt text](images/ca-selfhostedagent-architecture.png.png)
