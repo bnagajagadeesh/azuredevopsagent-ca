@@ -120,17 +120,6 @@ resource containerApp 'Microsoft.App/containerApps@2022-06-01-preview' = {
   properties: {
     managedEnvironmentId: containerAppEnv.id
     configuration: {
-      ingress: {
-        external: true
-        targetPort: 80
-        allowInsecure: false
-        traffic: [
-          {
-            latestRevision: true
-            weight: 100
-          }
-        ]
-      }
       registries: [
         {          
           server: acr.properties.loginServer
@@ -169,10 +158,12 @@ resource containerApp 'Microsoft.App/containerApps@2022-06-01-preview' = {
         maxReplicas: maxReplica
         rules: [
           {
-            name: 'http-requests'
-            http: {
+            name: 'cpu-utilization'
+            custom: {
+              type: 'cpu'
               metadata: {
-                concurrentRequests: '10'
+                type: 'AverageValue'
+                value: '75'
               }
             }
           }
@@ -181,7 +172,3 @@ resource containerApp 'Microsoft.App/containerApps@2022-06-01-preview' = {
     }
   }
 }
-
-
-output containerAppFQDN string = containerApp.properties.configuration.ingress.fqdn
-
