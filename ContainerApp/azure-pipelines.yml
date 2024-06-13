@@ -9,7 +9,7 @@ variables:
   subscriptionId: 'bde800a0-a73b-44c8-9891-5b403de7d784'
   resourceGroupName: 'rg-azpagent-poc'
   location: 'uksouth'
-  csmFile: 'main.bicep'  
+  csmFile: 'ContainerApp/main.bicep'  
 
 steps:
 - task: AzureResourceManagerTemplateDeployment@3

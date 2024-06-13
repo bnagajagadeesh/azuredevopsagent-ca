@@ -30,7 +30,7 @@ param gitRepositoryUrl string = 'https://github.com/bnagajagadeesh/azuredevopsag
 param gitBranch string = 'main'
 
 @description('The directory in the repo that contains the dockerfile')
-param gitRepoDirectory string = 'ContainerApp'
+param gitRepoDirectory string = 'ContainerAppWithPAT'
 
 @description('The image name/path you want to create in ACR')
 param imageName string = 'azpagent'
