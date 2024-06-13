@@ -2,7 +2,7 @@
 
 This is the companion repository for the [Run a self hosted agent in Docker](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops) and [Deploy to Azure Container Apps from Azure Pipelines](https://learn.microsoft.com/en-us/azure/container-apps/azure-pipelines). 
 
-This repository helps Azure DevOps engineers to setup Azure DevOps self-hosted agent running in Azure Container App using managed identity
+This repository helps Azure DevOps engineers to setup Azure DevOps self-hosted agent running in Azure Container App
 
 ## Architecture
 ![alt text](images/ca-selfhostedagent-architecture.png.png)
@@ -10,7 +10,7 @@ This repository helps Azure DevOps engineers to setup Azure DevOps self-hosted a
 ### Components
 
 #### Azure DevOps
-Source code is maintained in Azure DevOps Git repository. This pipeline will be triggered when a developer check-in code to GitHub repository.
+Source code is maintained in Azure DevOps Git repository. This pipeline will be triggered when a developer check-in code to Git repository.
 
 #### Azure Container Registry
 Stores self hosted agent container images. You can also use other container registries like Docker Hub.
@@ -20,7 +20,21 @@ Container App runs Azure DevOps self hosted agent container and listen for any p
 
 ## Getting Started
 
-In this quick start, you create Azure DevOps pipeline which deploys Bicep script to create an Azure container registry, run registry task to build from a Dockerfile and push to container registry, create user assigned identity, assign acrPull role on container registry, create container app with both self assigned managed identity & user assigned managed identity, set the registry with the image from container registry and set environment variables AZP_URL, AZP_AGENT_NAME and AZP_POOL
+In this quick start, you create Azure DevOps pipeline which deploys Bicep script to create an Azure container registry, run registry task to build image from a Dockerfile and push to container registry, create user assigned managed identity, assign acrPull role on container registry, create container app with both self assigned managed identity & user assigned managed identity, set the registry with the image from container registry and set environment variables AZP_URL, AZP_AGENT_NAME, AZP_POOL and AZP_TOKEN.
+
+Here is the summary of the code files in this repository:
+
+ContainerApp/azure-pipelines.yml: The pipeline is triggered on changes to the main branch. It uses the AzureResourceManagerTemplateDeployment@3 task to deploy resources to Azure using the main.bicep file.
+
+ContainerApp/start.sh: This is a bash script that is used to start an Azure DevOps agent in an Azure Container App. It fetches an access token from an Azure Container App using system assigned managed identity and uses it to authenticate the agent. It also handles cleanup of the agent configuration upon exit.
+
+ContainerApp/main.bicep: This is a bicep template for deploying resources to Azure. The template is used by the AzureResourceManagerTemplateDeployment@3 task in the Azure DevOps pipeline.
+
+ContainerApp/Dockerfile: This file contains instructions for building a Docker image that is used to run the Azure DevOps agent.
+
+The files in the ContainerAppWithPAT directory uses a Personal Access Token (PAT) for authentication instead of the container app's managed identity.
+
+You can use the files from ContainerApp or ContainerAppWithPAT depending on your requirement
 
 ### Create an Azure DevOps repository and clone the source code
 Create a new Git repository in Azure DevOps and clone the source code from [Github repo](https://github.com/bnagajagadeesh/azuredevopsagent-ca.git).
@@ -31,10 +45,30 @@ git clone https://github.com/bnagajagadeesh/azuredevopsagent-ca.git azuredevopsa
 ```
 
 ### Create an Azure DevOps service connection
-Create an Azure DevOps service connection for your Azure subscription. You can refer to  [create an azure devops service connection](https://learn.microsoft.com/en-us/azure/container-apps/azure-pipelines#create-an-azure-devops-service-connection) for detailed steps.
+In your Azure DevOps project, select Pipelines.
+
+Select New pipeline.
+
+Select Azure Repos Git.
+
+Select the repo that contains your source code (azuredevopsagent-aci).
+
+Existing Azure Pipelines YAML file
+
+Select /ContainerApp/azure-pipelines.yml or /ContainerAppWithPAT/azure-pipelines.yml
+
+Select Save and run.
+
+An Azure Pipelines run starts to build and deploy your container App. To check its progress, navigate to Pipelines and select the run. During the first pipeline run, you may be prompted to authorize the pipeline to use your service connection.
 
 ### Create an Azure DevOps YAML pipeline
 Create a new Azure DevOps YAML pipeline using [azure-pipelines.yml](azure-pipelines.yml). You can refer to  [create an azure devops yaml pipeline](https://learn.microsoft.com/en-us/azure/container-apps/azure-pipelines#create-an-azure-devops-yaml-pipeline) for detailed steps.
+
+#### Create Personal Access Token
+This step is required only if you want to use Personal Access Token (PAT) based authentication. Create a new PAT in Azure DevOps and note down token generated. You can refer to [Create a PAT](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows#create-a-pat) for detailed steps.
+
+#### Create a new secret variable
+This step is required only if you want to use PAT based authentication. Create a new secret variable called "azpToken" and set the value with the PAT value generated in the previous step. You can refer to [Secret variable in the UI](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/set-secret-variables?view=azure-devops&tabs=yaml%2Cbash#secret-variable-in-the-ui) for detailed steps.
 
 ### Create Agent pool
 Create a new agent pool following steps given [here](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=azure-devops&tabs=yaml%2Cbrowser#create-agent-pools) 
@@ -63,13 +97,12 @@ Container App: It creates a container app with the UAI and deploys it to the con
 You get an error in container app after the deployment due to missing permissions. 
 ![alt text](images/ca-agent-error.png)
 
-Access denied. ca-azpagent needs Manage permissions for pool selfhostedagentpool to perform the action. For more information, contact the Azure DevOps Server administrator.
-
 To fix this issue, you need to add below permissions in Azure DevOps
 
 Add System assigned managed identity of Container App to 
  1) Azure DevOps Orgnization settings - users and
  2) Add an Azure Managed Identity to an Azure DevOps agent pool follow these steps:  
+
 Navigate to your Azure DevOps organization.  
 Go to Project Settings.  
 Under Pipelines, select Agent Pools.  
