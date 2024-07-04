@@ -5,7 +5,7 @@ This is the companion repository for the [Run a self hosted agent in Docker](htt
 This repository helps Azure DevOps engineers to setup Azure DevOps self-hosted agent running in Azure Container App
 
 ## Architecture
-![alt text](images/ca-selfhostedagent-architecture.png.png)
+![alt text](images/ca-selfhostedagent-architecture.png)
 
 ### Components
 
